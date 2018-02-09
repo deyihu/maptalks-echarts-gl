@@ -1,0 +1,1 @@
+export default "@export ecgl.motionBlur.fragment\r\n\r\nuniform sampler2D lastFrame;\r\nuniform sampler2D thisFrame;\r\n\r\nuniform float percent: 0.7;\r\n\r\nvarying vec2 v_Texcoord;\r\n\r\nvoid main()\r\n{\r\n vec4 tex0 = texture2D(lastFrame, v_Texcoord);\r\n vec4 tex1 = texture2D(thisFrame, v_Texcoord);\r\n\r\n gl_FragColor = tex0 * percent + tex1;\r\n}\r\n\r\n@end";

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Map - Display a map</title>
+  <style type="text/css">
+    html,body{margin:0px;height:100%;width:100%}
+    .container{width:100%;height:100%}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks@0.36.2/dist/maptalks.css">
+  <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks@0.36.2/dist/maptalks.min.js"></script> -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks@0.37.0/dist/maptalks.min.js"></script>
+  <body>
+
+    <div id="map" class="container"></div>
+
+    <script>
+      var map = new maptalks.Map('map', {
+        center: [-0.113049,51.498568],
+        zoom: 14,
+        attribution: {
+          content: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+        },
+        baseLayer: new maptalks.TileLayer('base', {
+          urlTemplate: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+          subdomains: ['a','b','c','d']
+        })
+      });
+      map.setZoom(6,{animation:false})
+      console.log(map.getZoom())
+
+      setTimeout(function() {
+        console.log(map.getZoom())
+      }, 1000);
+      map.on('click',function(e){
+        console.log(map.getZoom())
+      })
+
+      // ['zoomend','zoomstart',  'pitch','pitchend','movestart','moving','moveend','resize'].forEach(function (eName) {
+      //   map.on(eName,function(){
+      //       console.log(eName)
+      //   });
+    // });
+
+    // var mapElement=document.getElementById('map').addEventListener('wheel',function(e){
+    //     console.log(e)
+    // })
+
+    </script>
+  </body>
+</html>
