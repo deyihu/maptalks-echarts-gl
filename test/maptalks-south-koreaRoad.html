@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>south-koreaRoad - ECHARTS-GL</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <!-- <meta name="apple-mobile-web-app-capable" content="yes"> Fullscreen Landscape on iOS -->
+        <link rel="stylesheet" href="./common.css">
+    </head>
+    <body>
+        <div id="main"></div>
+        <script src="../node_modules/echarts/dist/echarts.js"></script>
+        <script src="../node_modules/echarts/map/js/world.js"></script>
+        <script src="../dist/echarts-gl.js"></script>
+        <!-- <script src='lib/mapbox-gl.js'></script>
+        <link href='lib/mapbox-gl.css' rel='stylesheet' /> -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks@0.39.3/dist/maptalks.css">
+        <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks@0.37.0-alpha.0/dist/maptalks.min.js"></script> -->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks@0.39.3/dist/maptalks.min.js"></script>
+        <script src="lib/jquery.min.js"></script>
+        <script>
+            // mapboxgl.accessToken = window.location.search.slice(1);
+            // mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA'
+            var myChart = echarts.init(document.getElementById('main'));
+
+                    
+          
+            
+            
+            var taxiRoutes = [];
+            
+            
+            
+            
+            var dataurl = 'data/data-1516182603477-B1XI252Ef.json'
+            myChart.showLoading();
+            $.getJSON(dataurl, function(regionsData) {
+                myChart.hideLoading();
+                var data = regionsData.data;
+            
+            
+                var hStep = 300 / (data.length - 1);
+            
+                var i = 0;
+                for (var x in data) {
+                    // i++;
+                    // if(i<5000)
+                    //     continue;
+                    var pointString = data[x];
+                    // if(busLines.length>500)
+                    //     break;
+                   // var pointString = line.ROAD_LINE;
+                    var pointArr = pointString.split(';');
+                    var lnglats = [];
+                    for (var j in pointArr) {
+                        lnglats.push(pointArr[j].split(','))
+                    }
+                    taxiRoutes.push({
+                        coords: lnglats,
+                        lineStyle: {
+                            color: echarts.color.modifyHSL('#5A94DF', Math.round(hStep * x))
+            
+                        }
+                    })
+                }
+            
+                option = {
+                    maptalks: {
+                        center: [127.41212033876286,36.35230174302066],
+                        zoom: 8,
+                        baseLayer: {
+                            'urlTemplate': 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+                            'subdomains': ['a', 'b', 'c', 'd']
+                        },
+                        pitch: 50,
+                        // bearing: -10,
+                        altitudeScale: 2,
+                        // style: 'mapbox://styles/mapbox/dark-v9',
+                        postEffect: {
+                            enable: true,
+                            FXAA: {
+                                enable: true
+                            }
+                        },
+                        light: {
+                            main: {
+                                intensity: 1,
+                                shadow: true,
+                                shadowQuality: 'high'
+                            },
+                            ambient: {
+                                intensity: 0.
+                            },
+                            ambientCubemap: {
+                                texture: 'asset/data-1491838644249-ry33I7YTe.hdr',
+                                exposure: 1,
+                                diffuseIntensity: 0.5,
+                                specularIntensity: 2
+                            }
+                        }
+                    },
+                    series: [{
+                       type: 'lines3D',
+            
+                    coordinateSystem: 'maptalks',
+            
+                    effect: {
+                        show: true,
+                        constantSpeed: 1,
+                        trailWidth: 2,
+                        trailLength: 0.4,
+                        trailOpacity: 1,
+                        spotIntensity: 10
+                    },
+            
+                    blendMode: 'lighter',
+            
+                    polyline: true,
+            
+                    lineStyle: {
+                        width: 0.1,
+                        color: 'rgb(100, 100, 0)',
+                        opacity: 0.
+                    },
+            
+                    data: {
+                        count: function() {
+                            return taxiRoutes.length;
+                        },
+                        getItem: function(idx) {
+                            return taxiRoutes[idx]
+                        }
+                      }
+                    }]
+                }
+                myChart.setOption(option);
+                
+                var maptalksIns= myChart.getModel().getComponent('maptalks').getMaptalks();
+                maptalksIns.on('click',function(e){
+                    console.log(e)
+                })
+                
+                setTimeout(function() {
+                    maptalksIns.setZoom(9)
+                }, 1000);
+            })
+
+
+            window.addEventListener('resize', function () {
+                myChart.resize();
+            });
+
+
+
+
+
+        </script>
+    </body>
+</html>

@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Map3D - ECHARTS-GL</title>
+        <title>shanghaiHouse - ECHARTS-GL</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <!-- <meta name="apple-mobile-web-app-capable" content="yes"> Fullscreen Landscape on iOS -->
         <link rel="stylesheet" href="./common.css">
@@ -10,7 +10,7 @@
     <body>
         <div id="main"></div>
         <script src="../node_modules/echarts/dist/echarts.js"></script>
-        <script src="../node_modules/echarts/map/js/china.js"></script>
+        <script src="../node_modules/echarts/map/js/world.js"></script>
         <script src="../dist/echarts-gl.js"></script>
         <!-- <script src='lib/mapbox-gl.js'></script>
         <link href='lib/mapbox-gl.css' rel='stylesheet' /> -->
@@ -23,12 +23,19 @@
             // mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA'
             var myChart = echarts.init(document.getElementById('main'));
 
-            $.getJSON('./data/alcohol.json', function (data) {
+                    
+            var uploadedDataURL = "data/data-1495284690309-Bk9Ro3Te-.json";
 
+            myChart.showLoading();
+            
+            $.getJSON(uploadedDataURL, function(linedata) {
+            
+                myChart.hideLoading();
+            
                 myChart.setOption({
+            
                     visualMap: {
                         show: false,
-                        max: 1000,
                         calculable: true,
                         realtime: false,
                         inRange: {
@@ -36,26 +43,35 @@
                         },
                         outOfRange: {
                             colorAlpha: 0
-                        }
+                        },
+                        max: linedata[1]
                     },
                     maptalks: {
-                        center: [120.114129, 31.550339],
-                        zoom: 3,
-                        pitch: 30,
-                        // bearing: -10,
+                        center: [121.4693, 31.123070],
+                        zoom: 10,
+                        pitch: 50,
+                        bearing: -10,
                         // style: 'mapbox://styles/mapbox/light-v9',
-                        baseLayer:{
-                            'urlTemplate': 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-                            'subdomains'  : ['a','b','c','d']
+                        baseLayer: {
+                            //google
+                           'urlTemplate': 'http://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}',
+                            
+                            //amap 高德
+                           // 'urlTemplate': ' http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+                           
+                           //this is arcgis
+                        //    'urlTemplate': ' http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetGray/MapServer/tile/{z}/{y}/{x}',
+                          
+                            // 'subdomains'  : ['a','b','c','d']
                         },
-                        altitudeScale: 1e5,
+                        boxHeight: 50,
+                        // altitudeScale: 3e2,
                         postEffect: {
                             enable: true,
-                            screenSpaceAmbientOcclusion: {
+                            SSAO: {
                                 enable: true,
-                                intensity: 1,
-                                radius: 3,
-                                quality: 'high'
+                                radius: 2,
+                                intensity: 1.5
                             }
                         },
                         light: {
@@ -68,26 +84,39 @@
                                 intensity: 0.
                             },
                             ambientCubemap: {
-                                texture: 'asset/canyon.hdr',
-                                exposure: 2,
+                                texture: 'asset/data-1491896094618-H1DmP-5px.hdr',
+                                exposure: 1,
                                 diffuseIntensity: 0.5
                             }
                         }
                     },
                     series: [{
-                        type: 'map3D',
+                        type: 'bar3D',
+                        shading: 'realistic',
                         coordinateSystem: 'maptalks',
-                        map: 'china',
-                        regionHeight: 0.5,
-                        shading: 'lambert'
+                        barSize: 0.2,
+                        silent: true,
+                        data: linedata[0]
                     }]
                 });
+            
+                var maptalksIns = myChart.getModel().getComponent('maptalks').getMaptalks();
+                maptalksIns.on('click', function(e) {
+                    console.log(e)
+                })
+            
+                setTimeout(function() {
+                    maptalksIns.setZoom(9)
+                }, 1000);
             });
-            window.addEventListener('resize', function () {
+            
+            window.addEventListener('resize', function() {
                 myChart.resize();
             });
 
-            // });
+
+
+
 
 
 
