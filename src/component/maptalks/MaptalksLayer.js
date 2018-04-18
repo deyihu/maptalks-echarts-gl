@@ -48,18 +48,14 @@ MaptalksLayer.prototype.refresh = function () {
      this._maptalks.checkSize()
 };
 
+
 var EVENTS = ['mousedown', 'mouseup', 'click', 'dblclick', 'mousemove',
-'mousewheel', 'wheel',
-'touchstart', 'touchend', 'touchmove', 'touchcancel'
+    'mousewheel', 'DOMMouseScroll',
+    'touchstart', 'touchend', 'touchmove', 'touchcancel'
 ];
 
-
-
 MaptalksLayer.prototype._initEvents = function () {
-    var maptalksRoot=this.dom.firstElementChild;
-    // var maptalksRoot = this._maptalks.getContainer();
-    // var maptalksRoot=this._maptalks._containerDOM;
-    // var maptalksRoot=this.dom;
+    var maptalksRoot=this.dom;
     this._handlers = this._handlers || {
         contextmenu: function (e) {
             e.preventDefault();
@@ -68,19 +64,22 @@ MaptalksLayer.prototype._initEvents = function () {
     };
     EVENTS.forEach(function (eName) {
         this._handlers[eName] = function (e) {
-            e.preventDefault();
             var obj = {};
             for (var name in e) {
                 obj[name] = e[name];
             }
             obj.bubbles = false;
             var newE = new e.constructor(e.type, obj);
-            // console.log(newE)
-            maptalksRoot.dispatchEvent(newE);
+            if (eName === 'mousewheel' || eName === 'DOMMouseScroll') {
+                // maptalks listens events to different elements?
+                maptalksRoot.dispatchEvent(newE);
+            }
+            else {
+                maptalksRoot.firstElementChild.dispatchEvent(newE);
+            }
         };
         this.zr.dom.addEventListener(eName, this._handlers[eName]);
     }, this);
-
     // PENDING
     this.zr.dom.addEventListener('contextmenu', this._handlers.contextmenu);
 };

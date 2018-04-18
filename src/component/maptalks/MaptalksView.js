@@ -119,13 +119,7 @@ export default echarts.extendComponentView({
     },
 
     afterRender: function (maptalksModel, ecModel, api, layerGL) {
-        // layerGL.dom.style.pointerEvents='none';
-        var parentContainer=layerGL.dom.parentNode;
-        var childNodes=parentContainer.childNodes;
-        //dom 鼠标穿透，否则不能缩放maptalks map 对象呢？？？？？
-        for(var i=1;i<childNodes.length;i++){
-            childNodes[i].style.pointerEvents='none'
-        }
+    
         var renderer = layerGL.renderer;
         this._sceneHelper.updateAmbientCubemap(renderer, maptalksModel, api);
         this._sceneHelper.updateSkybox(renderer, maptalksModel, api);
