@@ -94,10 +94,27 @@
                 });
             // myChart.setOption(option);
 
-                var maptalksIns = myChart.getModel().getComponent('maptalks').getMaptalks();
-                maptalksIns.on('click', function(e) {
+                var map = myChart.getModel().getComponent('maptalks').getMaptalks();
+                map.on('click', function(e) {
                     console.log(e)
                 })
+
+                // point with altitude
+                var point = new maptalks.Marker(
+                    [13.366537740684862, 52.53422396765839],
+                    {
+                    properties : {
+                        altitude : 400
+                    }
+                    }
+                );
+
+               
+
+                new maptalks.VectorLayer('vector', [point], {
+                    enableAltitude : true,        // enable altitude
+                    altitudeProperty : 'altitude' // altitude property in properties, default by 'altitude'
+                }).addTo(map);
 
                 // setTimeout(function() {
                 //     maptalksIns.setZoom(14)

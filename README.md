@@ -1,5 +1,5 @@
 # maptalks-echarts-gl
-echarts-gl  添加 maptalks支持  
+echarts-gl  add maptalks support  
 
 exmaples:
 
